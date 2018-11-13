@@ -93,8 +93,7 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels){
         uint16_t block_id = toUINT16(bp_in[4 + interval], bp_in[5 + interval]);
         uint16_t history_id = toUINT16(bp_in[6 + interval], bp_in[7 + interval]);
         uint16_t data_size = toUINT16(bp_in[8 + interval], bp_in[9 + interval]);
-        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id,
-             data_size);
+        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id, data_size);
 
         if (data_size > 0) {
             jbyteArray compress_buf = env->NewByteArray(data_size);
@@ -119,7 +118,6 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels){
 //                        LOGI("point type = %d", point_type[q]);
                         // TODO 现阶段只画第一块 block_id = 1
 //                        color = point_pixels[j * q + i * j * q];
-                        color = point_pixels[INDEX];
                         red = ((color & 0x00FF0000) >> 16);
                         green = ((color & 0x0000FF00) >> 8);
                         blue = color & 0x000000FF;
@@ -133,15 +131,15 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels){
                 free(point_type);
             }
 
-            interval = data_size + 6 + interval;
-
             env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
             env->ReleaseByteArrayElements(uncompress_buf, p_uncompress, 0);
 
         }
 
-    }
+        interval = data_size + 6 + interval;
 
+    }
+    LOGI("INDEX = %d",INDEX);
     env->ReleaseByteArrayElements(in, bp_in, 0);
 }
 
