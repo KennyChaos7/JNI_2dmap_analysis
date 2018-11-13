@@ -31,9 +31,8 @@ public class BitmapView extends View {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void addByteArrayToBitmap(byte[] bytes){
-//        BitmapFactory.Options options = new BitmapFactory.Options();
-        mBitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+    public void addBitmap(Bitmap bitmap){
+        mBitmap = bitmap;
         postInvalidate();
     }
 
@@ -42,5 +41,6 @@ public class BitmapView extends View {
     {
         if (mBitmap != null)
             canvas.drawBitmap(mBitmap,0,0,mPaint);
+        super.onDraw(canvas);
     }
 }

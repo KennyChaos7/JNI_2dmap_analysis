@@ -1,5 +1,7 @@
 package org.k;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Kenny on 18-11-12.
  */
@@ -10,5 +12,5 @@ public class JNIUtils {
         System.loadLibrary("toBitmap");
     }
 
-    public native byte[] toBitmapByteArray(byte[] in);
+    public native int ModifyBitmapData(Bitmap bitmap, byte[] in);
 }
