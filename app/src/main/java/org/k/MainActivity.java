@@ -44,9 +44,10 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder __data = new StringBuilder();
         int length = -1, a_length = 0;
         try {
-            int t_length = getAssets().open("testdata").available();
+            String test_file_name = "testdata2";
+            int t_length = getAssets().open(test_file_name).available();
             byte[] bytes = new byte[t_length];
-            length = getAssets().open("testdata").read(bytes);
+            length = getAssets().open(test_file_name).read(bytes);
             __data.append(new String(bytes));
             String _ = __data.toString();
             _ = _.substring(0, t_length).trim();
