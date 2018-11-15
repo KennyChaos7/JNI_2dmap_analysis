@@ -43,6 +43,7 @@ public:
     uint8_t TYPE_BLOCK = 1;
     uint8_t TYPE_EMPTY = 0;
     uint8_t TYPE_UNUSE = 3;
+    uint8_t TYPE_CLEANED = 2;
 
     void ToTYPE(uint8_t bp_in, int *type);
     void analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels);
