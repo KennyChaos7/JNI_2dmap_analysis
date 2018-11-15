@@ -45,11 +45,11 @@ public:
     uint8_t TYPE_UNUSE = 3;
     uint8_t TYPE_CLEANED = 2;
 
-    void ToTYPE(uint8_t bp_in, int *type);
+    void ToTYPE(jbyte bp_in, int *type);
     void analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels);
     uint16_t toUINT16(uint8_t u1, uint8_t u2);
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);
-    void drawPoint(int32_t *point_pixels,int index,int alpha,int red,int green,int blue);
+    void drawPoint(int32_t *point_pixels, int index,int alpha,int red,int green,int blue);
 };
 
 #ifdef __cplusplus

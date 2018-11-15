@@ -23,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private Bitmap.Config mConfig;
 
+
+    String test_file_name = "testdata6";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder __data = new StringBuilder();
         int length = -1, a_length = 0;
         try {
-            String test_file_name = "testdata2";
             int t_length = getAssets().open(test_file_name).available();
             byte[] bytes = new byte[t_length];
             length = getAssets().open(test_file_name).read(bytes);
@@ -58,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
             byte[] map_data_bytes = Base64.decode(str_map,Base64.NO_WRAP);
             JNIUtils jni = new JNIUtils();
             int result = jni.ModifyBitmapData(mBitmap,map_data_bytes);
-            Log.e("toBitmap",""+result);
             mBitmapView.addBitmap(mBitmap);
+            Log.e("toBitmap",""+result);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }

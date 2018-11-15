@@ -7,10 +7,8 @@
 extern "C" {
 #endif
 
-    /**
-     * 返回地图数据长度
-     */
-JNIEXPORT jint JNICALL
+
+    JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
                                      jbyteArray in) {
 
@@ -57,7 +55,7 @@ uint16_t K::toUINT16(uint8_t u1, uint8_t u2) {
     * type : 2 => 已清扫
     * type : 3 => 空白
     */
-void K::ToTYPE(uint8_t bp_in, int *type) {
+void K::ToTYPE(jbyte bp_in, int *type) {
     type[0] = (bp_in >> 6) & 0x3;
     type[1] = (bp_in >> 4) & 0x3;
     type[2] = (bp_in >> 2) & 0x3;
@@ -65,8 +63,8 @@ void K::ToTYPE(uint8_t bp_in, int *type) {
 }
 
 void K::drawPoint(int32_t *point_pixels, int index, int alpha, int red, int green, int blue) {
-    int color = 0;
-    color = alpha | red | green | blue;
+    int32_t color = 0;
+    color = alpha | red << 16 | green << 8| blue ;
     point_pixels[index] = color;
 }
 
@@ -105,12 +103,12 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
     int interval = 0;
     int x_begin = 0;
     int y_begin = 0;
-    for (int i = 0; i < 50; ++i) { // 100
+    for (int i = 0; i < 100; ++i) {
 
         uint16_t block_id = toUINT16(bp_in[4 + interval], bp_in[5 + interval]);
         uint16_t history_id = toUINT16(bp_in[6 + interval], bp_in[7 + interval]);
         uint16_t data_size = toUINT16(bp_in[8 + interval], bp_in[9 + interval]);
-        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id, data_size);
+//        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id, data_size);
 
         int alpha = 0xFF << 24;
         int red = 0;
@@ -130,6 +128,7 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
             jbyte *p_uncompress = env->GetByteArrayElements(uncompress_buf, 0);
 
             map_decompress(p_compress, p_uncompress, data_size); // 解压数据
+            env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
 
             int x = 0;
             int y = 0;
@@ -137,39 +136,35 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
                 if (j > 0 && j % 25 == 0) {
                     y++;
                     x = 0;
-//                    LOGI("y = %d", (y + y_begin) * 1000);
                 }
-                auto *point_type = new int();
-                this->ToTYPE((const uint8_t) p_compress[j], point_type);
+                jintArray pointTypes = env->NewIntArray(4);
+                jint *point_type = env->GetIntArrayElements(pointTypes,0);
+                this->ToTYPE(p_uncompress[j], point_type);
                 for (int q = 0; q < 4; ++q) {
 //                    LOGI("j = %d, point_type[q] = %d",j,point_type[q]);
                     if (point_type[q] == TYPE_BLOCK) {
-//                        LOGI("index = %d, x = %d, y = %d",x + x_begin + (y + y_begin) * 1000,x + x_begin,y + y_begin);
-                        LOGI("block -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
-                        red = 255;
-                        green = 0;
-                        blue = 0;
-                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green,
-                                  blue);
-                    } else if (point_type[q] == TYPE_CLEANED)
-                    {
-                        LOGI("cleaned -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
+//                        LOGI("block -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
                         red = 0;
                         green = 0;
+                        blue = 0;
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green, blue);
+                    }
+                    else if (point_type[q] == TYPE_CLEANED)
+                    {
+//                        LOGI("cleaned -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
+                        red = 255;
+                        green = 255;
                         blue = 0;
                         drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green,
                                   blue);
                     }
                     x++;
                 }
-                free(point_type);
+                env->ReleaseIntArrayElements(pointTypes,point_type,0);
             }
 
-            env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
             env->ReleaseByteArrayElements(uncompress_buf, p_uncompress, 0);
 
-
-//            break;
         }
         interval = data_size + 6 + interval;
 
