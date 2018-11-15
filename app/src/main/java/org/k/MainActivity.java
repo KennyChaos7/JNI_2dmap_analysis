@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap.Config mConfig;
 
 
-    String test_file_name = "testdata6";
+    String test_file_name = "testdata7";
 
 
     @Override

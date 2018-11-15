@@ -26,7 +26,8 @@ Java_org_k_JNIUtils_ModifyBitmapData(JNIEnv *env, jobject instance, jobject obj_
     K *k = new K();
     k->analysis(env,in,(int32_t*)point_pixels);
     AndroidBitmap_unlockPixels(env, obj_bitmap);
-
+//    free(point_pixels);
+    free(k);
     return 0;
 }
 
@@ -63,9 +64,7 @@ void K::ToTYPE(jbyte bp_in, int *type) {
 }
 
 void K::drawPoint(int32_t *point_pixels, int index, int alpha, int red, int green, int blue) {
-    int32_t color = 0;
-    color = alpha | red << 16 | green << 8| blue ;
-    point_pixels[index] = color;
+    point_pixels[index] =  alpha | red << 16 | green << 8| blue ;
 }
 
 int K::map_decompress(jbyte *compress,jbyte *uncompress, int len) {
@@ -155,8 +154,7 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
                         red = 255;
                         green = 255;
                         blue = 0;
-                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green,
-                                  blue);
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green, blue);
                     }
                     x++;
                 }

@@ -56,8 +56,10 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
     }
 
     public void addBitmap(Bitmap bitmap){
-        mBitmap = bitmap;
-        postInvalidate();
+        if (bitmap != null) {
+            mBitmap = bitmap;
+            postInvalidate();
+        }
     }
 
     @Override
