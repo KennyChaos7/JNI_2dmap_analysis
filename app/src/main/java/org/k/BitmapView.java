@@ -8,10 +8,14 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
+import org.k.jni_2dmap_analysis.BuildConfig;
+
 /**
  * Created by Kenny on 18-11-12.
  */
@@ -59,6 +63,9 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
         if (bitmap != null) {
             mBitmap = bitmap;
             postInvalidate();
+        }
+        if (BuildConfig.DEBUG) {
+            Log.e("addBitmap", "postInvalidate");
         }
     }
 

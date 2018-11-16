@@ -1,6 +1,8 @@
 //
 // Created by root on 18-11-12.
 //
+
+//#define DEBUG 1
 #include "org_k_JNIUtils.h"
 
 #ifdef __cplusplus
@@ -16,8 +18,9 @@ Java_org_k_JNIUtils_ModifyBitmapData(JNIEnv *env, jobject instance, jobject obj_
     if (AndroidBitmap_getInfo(env, obj_bitmap, &bitmapInfo) != ANDROID_BITMAP_RESULT_SUCCESS) {
         return -88;
     }
+#ifdef DEBUG
     LOGI("width = %d , height = %d , format = %d", bitmapInfo.width,bitmapInfo.height,bitmapInfo.format);
-
+#endif
     void* point_pixels;
     if (AndroidBitmap_lockPixels(env,obj_bitmap,&point_pixels) != ANDROID_BITMAP_RESULT_SUCCESS)
     {
@@ -102,23 +105,28 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
     int interval = 0;
     int x_begin = 0;
     int y_begin = 0;
+    int alpha = 0xFF << 24;
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    uint16_t block_id = 0;
+    uint16_t history_id = 0;
+    uint16_t data_size = 0;
     for (int i = 0; i < 100; ++i) {
 
-        uint16_t block_id = toUINT16(bp_in[4 + interval], bp_in[5 + interval]);
-        uint16_t history_id = toUINT16(bp_in[6 + interval], bp_in[7 + interval]);
-        uint16_t data_size = toUINT16(bp_in[8 + interval], bp_in[9 + interval]);
-//        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id, data_size);
-
-        int alpha = 0xFF << 24;
-        int red = 0;
-        int green = 0;
-        int blue = 0;
+        block_id = toUINT16(bp_in[4 + interval], bp_in[5 + interval]);
+        history_id = toUINT16(bp_in[6 + interval], bp_in[7 + interval]);
+        data_size = toUINT16(bp_in[8 + interval], bp_in[9 + interval]);
+#ifdef DEBUG
+        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id, data_size);
+#endif
 
         if (data_size > 0){
             x_begin = (block_id - 1) % 10 * 100;
             y_begin = (block_id - 1) / 10 * 100;
-//            LOGI("x_begin = %d, y_begin = %d, index = %d", x_begin, y_begin, x_begin + y_begin * 100);
-
+#ifdef DEBUG
+            LOGI("x_begin = %d, y_begin = %d, index = %d", x_begin, y_begin, x_begin + y_begin * 100);
+#endif
             jbyteArray compress_buf = env->NewByteArray(data_size);
             jbyte *p_compress = env->GetByteArrayElements(compress_buf, 0);
             env->GetByteArrayRegion(in, 10 + interval, data_size, p_compress); // 复制数据
@@ -140,21 +148,28 @@ void K::analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels) {
                 jint *point_type = env->GetIntArrayElements(pointTypes,0);
                 this->ToTYPE(p_uncompress[j], point_type);
                 for (int q = 0; q < 4; ++q) {
-//                    LOGI("j = %d, point_type[q] = %d",j,point_type[q]);
+#ifdef DEBUG
+                    LOGI("j = %d, point_type[q] = %d",j,point_type[q]);
+#endif
                     if (point_type[q] == TYPE_BLOCK) {
-//                        LOGI("block -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
+#ifdef DEBUG
+                        LOGI("block -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
+#endif
                         red = 0;
                         green = 0;
                         blue = 0;
-                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green, blue);
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red,
+                                  green, blue);
                     }
-                    else if (point_type[q] == TYPE_CLEANED)
-                    {
-//                        LOGI("cleaned -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
-                        red = 255;
-                        green = 255;
-                        blue = 0;
-                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red, green, blue);
+                    else if (point_type[q] == TYPE_CLEANED) {
+#ifdef DEBUG
+                        LOGI("cleaned -- block_id = %d , x = %d, y = %d",block_id,x + x_begin , (y + y_begin));
+#endif
+                        red = 255 - 100;
+                        green = 255 - 149;
+                        blue = 255 - 237;
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red,
+                                  green, blue);
                     }
                     x++;
                 }

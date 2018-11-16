@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.k.jni_2dmap_analysis.BuildConfig;
 import org.k.jni_2dmap_analysis.R;
 
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mBitmapView = findViewById(R.id.bitmap_view);
+        mBitmapView.setBackgroundColor(R.color.mapViewBg);
         mConfig = Bitmap.Config.ARGB_8888;
         mBitmap = Bitmap.createBitmap(1000,1000,mConfig);
     }
@@ -54,15 +56,22 @@ public class MainActivity extends AppCompatActivity {
             __data.append(new String(bytes));
             String _ = __data.toString();
             _ = _.substring(0, t_length).trim();
-            Log.e("as", _);
-            Log.e("as", "length = " + length + " _.length = " + _.length() + "\n" + _.substring(t_length - 10));
+            if (BuildConfig.DEBUG) {
+                Log.e("as", _);
+                Log.e("as", "length = " + length + " _.length = " + _.length() + "\n" + _.substring(t_length - 10));
+            }
             JSONObject data = new JSONObject(_);
             String str_map = data.getString("map");
             byte[] map_data_bytes = Base64.decode(str_map,Base64.NO_WRAP);
             JNIUtils jni = new JNIUtils();
             int result = jni.ModifyBitmapData(mBitmap,map_data_bytes);
+            if (BuildConfig.DEBUG) {
+                Log.e("toBitmap", "" + result);
+            }
             mBitmapView.addBitmap(mBitmap);
-            Log.e("toBitmap",""+result);
+            if (BuildConfig.DEBUG) {
+                Log.e("toBitmap", "finish");
+            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
