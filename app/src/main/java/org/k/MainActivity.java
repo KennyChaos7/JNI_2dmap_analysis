@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap.Config mConfig;
 
 
-    String test_file_name = "testdata7";
+    String test_file_name = "testdata8";
 
 
     @Override
@@ -34,11 +34,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mButton = findViewById(R.id.button);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readAssetsFileToGetMap();
-            }
+        mButton.setOnClickListener((v)->{
+            readAssetsFileToGetMap();
+            readAssetsFileToGetTrack();
         });
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
@@ -63,8 +61,38 @@ public class MainActivity extends AppCompatActivity {
             JSONObject data = new JSONObject(_);
             String str_map = data.getString("map");
             byte[] map_data_bytes = Base64.decode(str_map,Base64.NO_WRAP);
-            JNIUtils jni = new JNIUtils();
-            int result = jni.ModifyBitmapData(mBitmap,map_data_bytes);
+            int result = JNIUtils.getInstance().getMapBitmap(mBitmap,map_data_bytes);
+            if (BuildConfig.DEBUG) {
+                Log.e("toBitmap", "" + result);
+            }
+            mBitmapView.addBitmap(mBitmap);
+            if (BuildConfig.DEBUG) {
+                Log.e("toBitmap", "finish");
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readAssetsFileToGetTrack()
+    {
+        StringBuilder __data = new StringBuilder();
+        int length = -1, a_length = 0;
+        try {
+            int t_length = getAssets().open(test_file_name).available();
+            byte[] bytes = new byte[t_length];
+            length = getAssets().open(test_file_name).read(bytes);
+            __data.append(new String(bytes));
+            String _ = __data.toString();
+            _ = _.substring(0, t_length).trim();
+            if (BuildConfig.DEBUG) {
+                Log.e("as", _);
+                Log.e("as", "length = " + length + " _.length = " + _.length() + "\n" + _.substring(t_length - 10));
+            }
+            JSONObject data = new JSONObject(_);
+            String str_track = data.getString("track");
+            byte[] track_data_bytes = Base64.decode(str_track,Base64.NO_WRAP);
+            int result = JNIUtils.getInstance().getTrackBitmap(mBitmap,track_data_bytes);
             if (BuildConfig.DEBUG) {
                 Log.e("toBitmap", "" + result);
             }

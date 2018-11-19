@@ -25,8 +25,12 @@ typedef struct {
 }argb;
 
 JNIEXPORT jint JNICALL
-Java_org_k_JNIUtils_ModifyBitmapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
+Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
                                      jbyteArray in);
+
+JNIEXPORT jint JNICALL
+Java_org_k_JNIUtils_ModifyBitmapTrackData(JNIEnv *env, jobject instance, jobject obj_bitmap,
+                                          jbyteArray in);
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_updateTrack(JNIEnv *env, jobject instance, jobject bitmap, jbyteArray o,
@@ -46,10 +50,12 @@ public:
     uint8_t TYPE_CLEANED = 2;
 
     void ToTYPE(jbyte bp_in, int *type);
-    void analysis(JNIEnv *env, jbyteArray in,int32_t *point_pixels);
+    void analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels);
+    void analysisTrack(JNIEnv* env, jbyteArray in, int32_t *point_pixels);
     uint16_t toUINT16(uint8_t u1, uint8_t u2);
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);
     void drawPoint(int32_t *point_pixels, int index,int alpha,int red,int green,int blue);
+    void drawLine(int32_t *point_pixels,int before_x,int before_y,int x,int y,int alpha,int red,int green,int blue);
 };
 
 #ifdef __cplusplus
