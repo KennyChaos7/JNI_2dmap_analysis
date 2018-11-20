@@ -92,12 +92,43 @@ void K::drawPoint(int32_t *point_pixels, int index, int alpha, int red, int gree
     point_pixels[index] = alpha << 24 | red << 16 | green << 8 | blue;
 }
 
-void K::drawLine(int32_t *point_pixels, int before_x,int before_y,int x,int y, int alpha, int red, int green,
+void K::drawLine(int32_t *point_pixels, int x1,int y1,int x2,int y2, int alpha, int red, int green,
                  int blue) {
-    if (before_x != -1 && before_y != -1)
+    if (y1 != -1 && x1 != -1)
     {
         // TODO 计算两个点之间的间隔的所有点的坐标
+        // URL https://www.cnblogs.com/pheye/archive/2010/08/14/1799803.html
+        int dx = x2 - x1;
+        int dy = y2 - y1;
+        int ux = ((dx > 0) << 1) - 1;//x的增量方向，取或-1
+        int uy = ((dy > 0) << 1) - 1;//y的增量方向，取或-1
+        int x = x1, y = y1, eps;//eps为累加误差
 
+        eps = 0;dx = abs(dx); dy = abs(dy);
+        if (dx > dy)
+        {
+            for (x = x1; x != x2; x += ux)
+            {
+                drawPoint(point_pixels,x+y*1000,alpha,red,green,blue);
+                eps += dy;
+                if ((eps << 1) >= dx)
+                {
+                    y += uy; eps -= dx;
+                }
+            }
+        }
+        else
+        {
+            for (y = y1; y != y2; y += uy)
+            {
+                drawPoint(point_pixels,x+y*1000,alpha,red,green,blue);
+                eps += dx;
+                if ((eps << 1) >= dy)
+                {
+                    x += ux; eps -= dy;
+                }
+            }
+        }
     }
 }
 
