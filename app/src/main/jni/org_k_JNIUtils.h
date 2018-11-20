@@ -40,6 +40,10 @@ JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_updateMap(JNIEnv *env, jobject instance, jobject bitmap, jbyteArray o,
                               jbyteArray n);
 
+JNIEXPORT jint JNICALL
+Java_org_k_JNIUtils_cleanBitmap(JNIEnv *env, jobject instance, jobject obj_bitmap, jint start_x,
+        jint start_y, jint end_x, jint end_y);
+
 class K {
 public:
     uint8_t Track_data_bits_2 = 2;
@@ -56,6 +60,7 @@ public:
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);
     void drawPoint(int32_t *point_pixels, int index,int alpha,int red,int green,int blue);
     void drawLine(int32_t *point_pixels,int before_x,int before_y,int x,int y,int alpha,int red,int green,int blue);
+    void clean(int32_t *point_pixels,int before_x,int before_y,int x,int y);
 };
 
 #ifdef __cplusplus

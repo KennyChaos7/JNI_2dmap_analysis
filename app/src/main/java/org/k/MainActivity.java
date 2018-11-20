@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
 import org.json.JSONException;
@@ -19,7 +18,7 @@ import java.io.IOException;
  * Created by Kenny on 18-11-12.
  */
 public class MainActivity extends AppCompatActivity {
-    private Button mButton;
+    private Button mBtn_first,mBtn_secord;
     private BitmapView mBitmapView;
     private Bitmap mBitmap;
     private Bitmap.Config mConfig;
@@ -33,11 +32,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mButton = findViewById(R.id.button);
-        mButton.setOnClickListener((v)->{
+        mBtn_first = findViewById(R.id.btn_first);
+        mBtn_first.setOnClickListener((v)->{
+            test_file_name = "testdata2";
             readAssetsFileToGetMap();
-            readAssetsFileToGetTrack();
+//            readAssetsFileToGetTrack();
         });
+        mBtn_secord = findViewById(R.id.btn_secord);
+        mBtn_secord.setOnClickListener((v -> {
+            test_file_name = "testdata8";
+            readAssetsFileToGetMap();
+//            readAssetsFileToGetTrack();
+        }));
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
         mConfig = Bitmap.Config.ARGB_8888;

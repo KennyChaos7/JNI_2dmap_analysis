@@ -29,7 +29,7 @@ Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject o
     K *k = new K();
     k->analysisMap(env, in, (int32_t *) point_pixels);
     AndroidBitmap_unlockPixels(env, obj_bitmap);
-    free(k);
+    delete(k);
     return 0;
 }
 
@@ -52,7 +52,7 @@ Java_org_k_JNIUtils_ModifyBitmapTrackData(JNIEnv *env, jobject instance, jobject
     K *k = new K();
     k->analysisTrack(env, in, (int32_t *) point_pixels);
     AndroidBitmap_unlockPixels(env, obj_bitmap);
-    free(k);
+    delete (k);
     return 0;
 }
 
@@ -65,6 +65,27 @@ Java_org_k_JNIUtils_updateTrack(JNIEnv *env, jobject instance, jobject bitmap, j
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_updateMap(JNIEnv *env, jobject instance, jobject bitmap, jbyteArray o,
                               jbyteArray n) {
+    return 0;
+}
+
+
+JNIEXPORT jint JNICALL
+Java_org_k_JNIUtils_cleanBitmap(JNIEnv *env, jobject instance, jobject obj_bitmap, jint start_x,
+                                jint start_y, jint end_x, jint end_y) {
+
+    AndroidBitmapInfo bitmapInfo = {ANDROID_BITMAP_FORMAT_RGBA_8888};
+    if (AndroidBitmap_getInfo(env, obj_bitmap, &bitmapInfo) != ANDROID_BITMAP_RESULT_SUCCESS) {
+        return -88;
+    }
+#ifdef DEBUG
+    LOGI("width = %d , height = %d , format = %d", bitmapInfo.width, bitmapInfo.height,
+         bitmapInfo.format);
+#endif
+    void *point_pixels;
+    if (AndroidBitmap_lockPixels(env, obj_bitmap, &point_pixels) != ANDROID_BITMAP_RESULT_SUCCESS) {
+        return -99;
+    }
+
     return 0;
 }
 
