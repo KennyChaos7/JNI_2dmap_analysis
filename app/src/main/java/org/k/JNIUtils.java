@@ -6,23 +6,29 @@ import android.graphics.Bitmap;
  * Created by Kenny on 18-11-12.
  */
 final class JNIUtils {
-    private static JNIUtils sJNIUtils = null;
-    private static int[] color_block = {0,0,0,0};
-    public static JNIUtils getInstance()
+    private int[] color_block = {0,0,0,0};
+    private int[] color_cleaned = {0,0,0,0};
+    private byte[] last_time_history_id_list = new byte[100];
+
+    JNIUtils(int[] color_block,int[] color_cleaned)
     {
-        synchronized (JNIUtils.class)
-        {
-            if (sJNIUtils == null)
-                sJNIUtils = new JNIUtils();
-        }
-        return sJNIUtils;
+        this.color_block = color_block;
+        this.color_cleaned = color_cleaned;
+        for (byte b:last_time_history_id_list)
+            b = 1;
     }
 
+    /**
+     * 自带增量校验
+     * @param bitmap 1000x1000, Bitmap.Config.ARGB_8888（即ARGB）
+     * @param in 纯地图数据, 已经经过base64解码的
+     * @return
+     */
     public int getMapBitmap(Bitmap bitmap, byte[] in)
     {
         if (bitmap != null && in != null)
         {
-            return this.ModifyBitmapMapData(bitmap,in);
+            return this.ModifyBitmapMapData(bitmap,last_time_history_id_list,in);
         }
         else
             return -1;
@@ -39,6 +45,12 @@ final class JNIUtils {
             return -1;
     }
 
+
+    /**
+     * 清除Bitmap中的时候全部像素
+     * @param bitmap
+     * @return
+     */
     public int cleanWholeBitmap(Bitmap bitmap)
     {
         if (bitmap != null) {
@@ -66,11 +78,12 @@ final class JNIUtils {
      * 全量地图
      * @param bitmap 传入bitmap对象, 该对象需在java层创建完毕
      * @param in 传入byte[]数组的地图信息
+     * @param last_time_history_id_list 上次解析的话得出的历史id
      * @return 错误码
      * -88 是指bitmap的文件头信息无法获取
      * -99 是指无法锁定bitmap的像素指针
      */
-    private native int ModifyBitmapMapData(Bitmap bitmap, byte[] in);
+    private native int ModifyBitmapMapData(Bitmap bitmap,byte[] last_time_history_id_list, byte[] in);
 
     /*
      * 全量轨迹

@@ -23,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap mBitmap;
     private Bitmap.Config mConfig;
 
-
-    String test_file_name = "testdata8";
+    private JNIUtils mJNIUtils = null;
+    private int[] color_block = new int[]{255,0,0,0};
+    private int[] color_cleaned = new int[]{255,100,149,237};
+    String test_file_name = "";
 
 
     @Override
@@ -34,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
-            test_file_name = "testdata2";
+            test_file_name = "testdata";
             readAssetsFileToGetMap();
 //            readAssetsFileToGetTrack();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-            test_file_name = "testdata8";
+            test_file_name = "testdata2";
             readAssetsFileToGetMap();
 //            readAssetsFileToGetTrack();
         }));
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
         mConfig = Bitmap.Config.ARGB_8888;
         mBitmap = Bitmap.createBitmap(1000,1000,mConfig);
+        mJNIUtils = new JNIUtils(color_block,color_cleaned);
     }
 
     private void readAssetsFileToGetMap() {
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             JSONObject data = new JSONObject(_);
             String str_map = data.getString("map");
             byte[] map_data_bytes = Base64.decode(str_map,Base64.NO_WRAP);
-            int result = JNIUtils.getInstance().getMapBitmap(mBitmap,map_data_bytes);
+            int result = mJNIUtils.getMapBitmap(mBitmap,map_data_bytes);
             if (BuildConfig.DEBUG) {
                 Log.e("toBitmap", "" + result);
             }
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             JSONObject data = new JSONObject(_);
             String str_track = data.getString("track");
             byte[] track_data_bytes = Base64.decode(str_track,Base64.NO_WRAP);
-            int result = JNIUtils.getInstance().getTrackBitmap(mBitmap,track_data_bytes);
+            int result = mJNIUtils.getTrackBitmap(mBitmap,track_data_bytes);
             if (BuildConfig.DEBUG) {
                 Log.e("toBitmap", "" + result);
             }
