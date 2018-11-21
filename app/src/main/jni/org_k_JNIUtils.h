@@ -22,11 +22,11 @@ typedef struct {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
-}argb;
+}ARGB;
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
-                                     jbyteArray last_time_history_id_list,jbyteArray in);
+                                     jbyteArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in);
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapTrackData(JNIEnv *env, jobject instance, jobject obj_bitmap,
@@ -55,7 +55,7 @@ public:
     jbyteArray last_history_id = NULL;
 
     void ToTYPE(jbyte bp_in, int *type);
-    void analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels);
+    void analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);
     void analysisTrack(JNIEnv* env, jbyteArray in, int32_t *point_pixels);
     uint16_t toUint16(uint8_t u1, uint8_t u2);
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);

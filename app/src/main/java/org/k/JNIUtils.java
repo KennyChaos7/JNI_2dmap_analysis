@@ -1,6 +1,10 @@
 package org.k;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.util.Log;
+
+import org.k.jni_2dmap_analysis.BuildConfig;
 
 /**
  * Created by Kenny on 18-11-12.
@@ -10,10 +14,10 @@ final class JNIUtils {
     private int[] color_cleaned = {0,0,0,0};
     private byte[] last_time_history_id_list = new byte[100];
 
-    JNIUtils(int[] color_block,int[] color_cleaned)
+    JNIUtils(String str_color_block,String str_color_cleaned)
     {
-        this.color_block = color_block;
-        this.color_cleaned = color_cleaned;
+        this.color_block = parseColor(str_color_block);
+        this.color_cleaned = parseColor(str_color_cleaned);
         for (byte b:last_time_history_id_list)
             b = 1;
     }
@@ -22,13 +26,13 @@ final class JNIUtils {
      * 自带增量校验
      * @param bitmap 1000x1000, Bitmap.Config.ARGB_8888（即ARGB）
      * @param in 纯地图数据, 已经经过base64解码的
-     * @return
+     * @return {{@link #ModifyBitmapMapData(Bitmap, byte[], int[], int[], byte[])}}
      */
     public int getMapBitmap(Bitmap bitmap, byte[] in)
     {
         if (bitmap != null && in != null)
         {
-            return this.ModifyBitmapMapData(bitmap,last_time_history_id_list,in);
+            return this.ModifyBitmapMapData(bitmap,last_time_history_id_list,color_block,color_cleaned,in);
         }
         else
             return -1;
@@ -51,6 +55,7 @@ final class JNIUtils {
      * @param bitmap
      * @return
      */
+    @Deprecated
     public int cleanWholeBitmap(Bitmap bitmap)
     {
         if (bitmap != null) {
@@ -60,6 +65,7 @@ final class JNIUtils {
             return -1;
     }
 
+    @Deprecated
     public int cleanPartBitmap(Bitmap bitmap,int start_x,int start_y,int end_x,int end_y)
     {
         if (bitmap != null) {
@@ -67,6 +73,12 @@ final class JNIUtils {
         }
         else
             return -1;
+    }
+
+    private int[] parseColor(String str_color)
+    {
+         int _color = Color.parseColor(str_color);
+         return new int[]{Color.alpha(_color),Color.red(_color),Color.green(_color),Color.blue(_color)};
     }
 
     static
@@ -83,7 +95,8 @@ final class JNIUtils {
      * -88 是指bitmap的文件头信息无法获取
      * -99 是指无法锁定bitmap的像素指针
      */
-    private native int ModifyBitmapMapData(Bitmap bitmap,byte[] last_time_history_id_list, byte[] in);
+    private native int ModifyBitmapMapData(Bitmap bitmap,byte[] last_time_history_id_list,
+                                           int[] color_block,int[] color_cleaned, byte[] in);
 
     /*
      * 全量轨迹

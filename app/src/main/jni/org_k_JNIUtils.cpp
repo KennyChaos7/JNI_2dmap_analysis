@@ -12,7 +12,7 @@ extern "C" {
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
-                                        jbyteArray last_time_history_id_list,jbyteArray in) {
+                                        jbyteArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in) {
 
     AndroidBitmapInfo bitmapInfo = {ANDROID_BITMAP_FORMAT_RGBA_8888};
     if (AndroidBitmap_getInfo(env, obj_bitmap, &bitmapInfo) != ANDROID_BITMAP_RESULT_SUCCESS) {
@@ -26,12 +26,16 @@ Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject o
     if (AndroidBitmap_lockPixels(env, obj_bitmap, &point_pixels) != ANDROID_BITMAP_RESULT_SUCCESS) {
         return -99;
     }
+    jint *ip_block = env->GetIntArrayElements(color_block,0);
+    jint *ip_clean = env->GetIntArrayElements(color_cleaned,0);
     K *k = new K();
     k->last_history_id = last_time_history_id_list;
-    k->analysisMap(env, in, (int32_t *) point_pixels);
+    k->analysisMap(env, in, (int32_t *) point_pixels,ip_block,ip_clean);
     AndroidBitmap_unlockPixels(env, obj_bitmap);
     last_time_history_id_list = k->last_history_id;
     delete(k);
+    env->ReleaseIntArrayElements(color_block,ip_block,0);
+    env->ReleaseIntArrayElements(color_cleaned,ip_clean,0);
     return 0;
 }
 
@@ -112,7 +116,7 @@ void K::ToTYPE(jbyte bp_in, int *type) {
 }
 
 void K::drawPoint(int32_t *point_pixels, int index, int alpha, int red, int green, int blue) {
-    point_pixels[index] = alpha << 24 | red << 16 | green << 8 | blue;
+    point_pixels[index] = alpha << 24 | blue << 16 | green << 8 | red ;
 }
 
 void K::drawLine(int32_t *point_pixels, int x1,int y1,int x2,int y2, int alpha, int red, int green,
@@ -179,7 +183,7 @@ int K::map_decompress(jbyte *compress, jbyte *uncompress, int len) {
 }
 
 
-void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels) {
+void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned) {
     jbyte *bp_in = env->GetByteArrayElements(in, 0);
     jbyte *bp_last_histort_id = env->GetByteArrayElements(last_history_id,0);
     /*
@@ -191,7 +195,7 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels) {
     int interval = 0;
     int x_begin = 0;
     int y_begin = 0;
-    int alpha = 255;
+    int alpha = 0;
     int red = 0;
     int green = 0;
     int blue = 0;
@@ -247,20 +251,24 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels) {
 #ifdef DEBUG
                             LOGI("block -- block_id = %d , x = %d, y = %d", block_id, x + x_begin,
                                  (y + y_begin));
+                            LOGI("block -- alpha = %d , red = %d , green = %d , blue = %d",argb_block[0],argb_block[1],argb_block[2],argb_block[3]);
 #endif
-                            red = 0;
-                            green = 0;
-                            blue = 0;
+                            alpha = argb_block[0];
+                            red =  argb_block[1];
+                            green =  argb_block[2];
+                            blue =  argb_block[3];
                             drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red,
                                       green, blue);
                         } else if (point_type[q] == TYPE_CLEANED) {
 #ifdef DEBUG
                             LOGI("cleaned -- block_id = %d , x = %d, y = %d", block_id, x + x_begin,
                                  (y + y_begin));
+                            LOGI("cleaned -- alpha = %d , red = %d , green = %d , blue = %d",argb_cleaned[0],argb_cleaned[1],argb_cleaned[2],argb_cleaned[3]);
 #endif
-                            red = 255 - 100;
-                            green = 255 - 149;
-                            blue = 255 - 237;
+                            alpha = argb_cleaned[0];
+                            red = argb_cleaned[1];//255 - 100;
+                            green = argb_cleaned[2];//255 - 149;
+                            blue = argb_cleaned[3];//255 - 237;
                             drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000, alpha, red,
                                       green, blue);
                         }

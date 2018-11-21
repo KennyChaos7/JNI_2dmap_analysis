@@ -1,6 +1,7 @@
 package org.k;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -24,8 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap.Config mConfig;
 
     private JNIUtils mJNIUtils = null;
-    private int[] color_block = new int[]{255,0,0,0};
-    private int[] color_cleaned = new int[]{255,100,149,237};
+    private int[] color_block = new int[]{0xFF,255,255,255};
+    private int[] color_cleaned = new int[]{255,255,0,153};
+    private String str_color_block = "#FF000000";
+    private String str_color_cleaned = "#ffff0099";
     String test_file_name = "";
 
 
@@ -36,13 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
-            test_file_name = "testdata";
+            test_file_name = "testdata8";
             readAssetsFileToGetMap();
 //            readAssetsFileToGetTrack();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-            test_file_name = "testdata2";
+            test_file_name = "testdata";
             readAssetsFileToGetMap();
 //            readAssetsFileToGetTrack();
         }));
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
         mConfig = Bitmap.Config.ARGB_8888;
         mBitmap = Bitmap.createBitmap(1000,1000,mConfig);
-        mJNIUtils = new JNIUtils(color_block,color_cleaned);
+        mJNIUtils = new JNIUtils(str_color_block,str_color_cleaned);
     }
 
     private void readAssetsFileToGetMap() {
