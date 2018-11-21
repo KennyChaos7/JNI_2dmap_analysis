@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int[] color_block = new int[]{0xFF,255,255,255};
     private int[] color_cleaned = new int[]{255,255,0,153};
     private String str_color_block = "#FF000000";
-    private String str_color_cleaned = "#ffff0099";
+    private String str_color_cleaned = "#ff000066";
     String test_file_name = "";
 
 
@@ -41,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
         mBtn_first.setOnClickListener((v)->{
             test_file_name = "testdata8";
             readAssetsFileToGetMap();
-//            readAssetsFileToGetTrack();
+            readAssetsFileToGetTrack();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
             test_file_name = "testdata";
-            readAssetsFileToGetMap();
-//            readAssetsFileToGetTrack();
+//            readAssetsFileToGetMap();
+            readAssetsFileToGetTrack();
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(R.color.mapViewBg);

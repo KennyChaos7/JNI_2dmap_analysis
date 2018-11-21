@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 /**
  * Created by Kenny on 18-11-12.
+ * Version : 0.0.1
  * 调用步骤如下：
  * 1,{@link #JNIUtils(String, String)}
  * 2,{@link #ModifyBitmapMapData(Bitmap, byte[], int[], int[], byte[])}
@@ -82,8 +83,8 @@ final class JNIUtils {
 
     private int[] parseColor(String str_color)
     {
-         int _color = Color.parseColor(str_color);
-         return new int[]{Color.alpha(_color),Color.red(_color),Color.green(_color),Color.blue(_color)};
+        int _color = Color.parseColor(str_color);
+        return new int[]{Color.alpha(_color),Color.red(_color),Color.green(_color),Color.blue(_color)};
     }
 
     static
@@ -124,6 +125,7 @@ final class JNIUtils {
      * @param end_y
      * @return
      */
+    @Deprecated
     private native int cleanBitmap(Bitmap bitmap,int start_x,int start_y,int end_x,int end_y);
 
     /**
