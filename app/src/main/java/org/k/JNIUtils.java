@@ -2,18 +2,23 @@ package org.k;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.util.Log;
-
-import org.k.jni_2dmap_analysis.BuildConfig;
 
 /**
  * Created by Kenny on 18-11-12.
+ * 调用步骤如下：
+ * 1,{@link #JNIUtils(String, String)}
+ * 2,{@link #ModifyBitmapMapData(Bitmap, byte[], int[], int[], byte[])}
  */
 final class JNIUtils {
     private int[] color_block = {0,0,0,0};
     private int[] color_cleaned = {0,0,0,0};
     private byte[] last_time_history_id_list = new byte[100];
 
+    /**
+     * 传入色值并在此类中保存
+     * @param str_color_block 障碍色值的ARGB十六进制string
+     * @param str_color_cleaned 已清扫色值的ARGB十六进制string
+     */
     JNIUtils(String str_color_block,String str_color_cleaned)
     {
         this.color_block = parseColor(str_color_block);
