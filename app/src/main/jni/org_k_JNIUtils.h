@@ -53,6 +53,7 @@ public:
     uint8_t TYPE_UNUSE = 3;
     uint8_t TYPE_CLEANED = 2;
     jbyteArray last_history_id = NULL;
+    int multiple = 1;
 
     void ToTYPE(jbyte bp_in, int *type);
     void analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);

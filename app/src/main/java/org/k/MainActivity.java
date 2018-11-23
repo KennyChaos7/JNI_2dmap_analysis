@@ -23,10 +23,9 @@ public class MainActivity extends AppCompatActivity {
     private BitmapView mBitmapView;
     private Bitmap mBitmap;
     private Bitmap.Config mConfig;
-
     private JNIUtils mJNIUtils = null;
-    private int[] color_block = new int[]{0xFF,255,255,255};
-    private int[] color_cleaned = new int[]{255,255,0,153};
+
+    private int size = 1000;
     private String str_color_block = "#FF000000";
     private String str_color_cleaned = "#ff000066";
     String test_file_name = "";
@@ -39,20 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
-            test_file_name = "testdata8";
+            test_file_name = "testdata10";
             readAssetsFileToGetMap();
             readAssetsFileToGetTrack();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-            test_file_name = "testdata";
-//            readAssetsFileToGetMap();
+            test_file_name = "testdata8";
+            readAssetsFileToGetMap();
             readAssetsFileToGetTrack();
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
         mConfig = Bitmap.Config.ARGB_8888;
-        mBitmap = Bitmap.createBitmap(1000,1000,mConfig);
+        mBitmap = Bitmap.createBitmap(size,size,mConfig);
         mJNIUtils = new JNIUtils(str_color_block,str_color_cleaned);
     }
 
