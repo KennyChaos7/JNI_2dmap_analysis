@@ -107,6 +107,7 @@ void isException(JNIEnv* env,int errorCode)
         env->ExceptionDescribe();
         env->ExceptionClear();
         LOGE("jni exception happened, errorCode = %d",errorCode);
+        env->ThrowNew(env->FindClass("java/lang/Exception"),"JNI抛出的异常！");
     }
 
 }

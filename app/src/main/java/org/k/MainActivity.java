@@ -38,14 +38,14 @@ public class MainActivity extends AppCompatActivity {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
-            test_file_name = "testdata11";
-//            readAssetsFileToGetMap();
+            test_file_name = "testdata9";
+            readAssetsFileToGetMap();
             readAssetsFileToGetTrack();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-            test_file_name = "testdata10";
-//            readAssetsFileToGetMap();
+            test_file_name = "testdata8";
+            readAssetsFileToGetMap();
             readAssetsFileToGetTrack();
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
