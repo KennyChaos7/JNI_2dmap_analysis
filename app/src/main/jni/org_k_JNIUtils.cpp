@@ -3,6 +3,9 @@
 //
 
 //#define DEBUG
+int ERROR_CODE_AnalysisMap      =   0x01;
+int ERROR_CODE_AnalysisTrack    =   0x10;
+
 #include <android/bitmap.h>
 #include "org_k_JNIUtils.h"
 
@@ -95,6 +98,17 @@ Java_org_k_JNIUtils_cleanBitmap(JNIEnv *env, jobject instance, jobject obj_bitma
     }
 
     return 0;
+}
+
+void isException(JNIEnv* env,int errorCode)
+{
+    if (env->ExceptionCheck())
+    {
+        env->ExceptionDescribe();
+        env->ExceptionClear();
+        LOGE("jni exception happened, errorCode = %d",errorCode);
+    }
+
 }
 
 uint16_t K::toUint16(uint8_t u1, uint8_t u2) {
@@ -203,20 +217,23 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb
 
     for (int i = 0; i < 100; ++i) {
 
+        /*
+         * 先检测是否有错误
+         */
+        isException(env,ERROR_CODE_AnalysisMap);
+
         block_id = toUint16(bp_in[4 + interval], bp_in[5 + interval]);
         history_id = toUint16(bp_in[6 + interval], bp_in[7 + interval]);
         data_size = toUint16(bp_in[8 + interval], bp_in[9 + interval]);
 
-        if (block_id < 1 || block_id > 100) {
-            LOGI("JNI -- block id is error");
-            break;
-        }
+
 #ifdef DEBUG
             LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id,
                  data_size);
              LOGI("history_id = %d, bp_last_histort_id = %d ,i = %d",history_id,bp_last_histort_id[i],i);
 #endif
         if (data_size > 0 && bp_last_histort_id[i] < history_id) {
+            isException(env,ERROR_CODE_AnalysisMap);
 
             bp_last_histort_id[i] = history_id;
             x_begin = (block_id - 1) % 10 * 100;
@@ -239,7 +256,9 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb
             int x = 0;
             int y = 0;
             for (int j = 0; j < 2500; ++j) {
+                isException(env,ERROR_CODE_AnalysisMap);
                 if (j > 0 && j % 25 == 0) {
+                    isException(env,ERROR_CODE_AnalysisMap);
                     y++;
                     x = 0;
                 }
@@ -247,6 +266,7 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb
                 jint *point_type = env->GetIntArrayElements(pointTypes, 0);
                 this->ToTYPE(p_uncompress[j], point_type);
                 for (int q = 0; q < 4; ++q) {
+                    isException(env,ERROR_CODE_AnalysisMap);
 #ifdef DEBUG
                     LOGI("j = %d, point_type[q] = %d", j, point_type[q]);
 #endif
@@ -366,7 +386,9 @@ void K::analysisTrack(JNIEnv *env, jbyteArray in, int32_t *point_pixels) {
     int blue = 255;
     int __before_x = -1;
     int __before_y = -1;
+    isException(env,ERROR_CODE_AnalysisTrack);
     for (int i = 0; i + 3 < track_data_size; i += 4) {
+        isException(env,ERROR_CODE_AnalysisTrack);
         x = toUint16(bp_in[8 + i], bp_in[8 + i + 1]);
         y = toUint16(bp_in[8 + i + 2], bp_in[8 + i + 3]);
         // TODO drawLine

@@ -23,6 +23,7 @@ typedef struct {
     uint8_t green;
     uint8_t blue;
 }ARGB;
+void isException(JNIEnv* env,int errorCode);
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
