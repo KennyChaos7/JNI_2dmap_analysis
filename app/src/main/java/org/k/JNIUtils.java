@@ -8,11 +8,14 @@ import android.graphics.Color;
  * Version : 0.0.1
  * 调用步骤如下：
  * 1,{@link #JNIUtils(String, String)}
- * 2,{@link #ModifyBitmapMapData(Bitmap, byte[], int[], int[], byte[])}
+ * 2,{@link #ModifyBitmapMapData(Bitmap, int[], int[], int[], byte[])}
  */
 final class JNIUtils {
     private int[] color_block = {0,0,0,0};
     private int[] color_cleaned = {0,0,0,0};
+    /*
+        每次操作完地图数据后, 此处history_id会更新为刚刚解析完后正副地图的history_id列表
+     */
     public int[] last_time_history_id_list = new int[100];
 
     /**
@@ -32,7 +35,7 @@ final class JNIUtils {
      * 自带增量校验
      * @param bitmap 1000x1000, Bitmap.Config.ARGB_8888（即ARGB）
      * @param in 纯地图数据, 已经经过base64解码的
-     * @return {{@link #ModifyBitmapMapData(Bitmap, byte[], int[], int[], byte[])}}
+     * @return {{@link #ModifyBitmapMapData(Bitmap, int[], int[], int[], byte[])}}
      */
     public int getMapBitmap(Bitmap bitmap, byte[] in)
     {
