@@ -233,8 +233,8 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
                  data_size);
              LOGI("history_id = %d, bp_last_histort_id = %d ,i = %d",history_id,bp_last_histort_id[i],i);
 #endif
-        LOGI("point_history_id_list[i] = %d , i = %d ",point_history_id_list[i],i);
-        LOGI("history_id = %d ",history_id);
+//        LOGI("point_history_id_list[i] = %u , i = %d ",point_history_id_list[i],i);
+//        LOGI("history_id = %u ",history_id);
         if (data_size > 0 && point_history_id_list[i] < history_id) {
             isException(env,ERROR_CODE_AnalysisMap);
             point_history_id_list[i] = (unsigned int)history_id;

@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Kenny on 18-11-12.
@@ -34,8 +37,9 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     private String str_color_block = "#FF000000";
     private String str_color_cleaned = "#ff000066";
     String test_file_name = "";
+    ScheduledExecutorService scheduledThread = Executors.newScheduledThreadPool(1);
     int ssss = 13;
-    String __IP = "192.168.233.168";
+    String __IP = "192.168.168.148";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,29 +48,55 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
-//            String _ = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
-//            JSONObject jo = new JSONObject();
-//            try {
-//                jo.put("map",_);
-//                jo.put("track",_);
-//                int jo_length = jo.toString().getBytes().length;
-//                byte[] bytes_send = new byte[jo_length + 4];
-//                byte[] temp = __intToByteArrayLittle(jo_length,4);
-//                System.arraycopy(temp,0,bytes_send,0,4);
-//                System.arraycopy(jo.toString().getBytes(),0,bytes_send,4,jo_length);
-//                tcpUtil.send(bytes_send);
-//                bytes_send = null;
-//                temp = null;
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-            test_file_name = "testdata8";
-            readAssetsFileToGetMap();
+            String _ = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
+            JSONObject jo = new JSONObject();
+            try {
+                jo.put("map",_);
+                jo.put("track",_);
+                int jo_length = jo.toString().getBytes().length;
+                byte[] bytes_send = new byte[jo_length + 4];
+                byte[] temp = __intToByteArrayLittle(jo_length,4);
+                System.arraycopy(temp,0,bytes_send,0,4);
+                System.arraycopy(jo.toString().getBytes(),0,bytes_send,4,jo_length);
+                tcpUtil.send(bytes_send);
+                bytes_send = null;
+                temp = null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            test_file_name = "testdata8";
+//            readAssetsFileToGetMap();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-            test_file_name = "testdata";
-            readAssetsFileToGetMap();
+//            test_file_name = "testdata";
+//            readAssetsFileToGetMap();
+            scheduledThread.scheduleAtFixedRate(() -> {
+                byte[] historyIdsToBytes = new byte[100 * 2];
+                for (int index = 0; index < 100; index++)
+                {
+                    int historyId = mJNIUtils.last_time_history_id_list[index];
+                    byte[] temp = __intToByteArrayLittle(historyId,2);
+                    System.arraycopy(temp,0,historyIdsToBytes,index * 2 , 2);
+                }
+                String _map = Base64.encodeToString(historyIdsToBytes,Base64.NO_WRAP);
+                String _track = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
+                JSONObject jo = new JSONObject();
+                try {
+                    jo.put("map",_map);
+                    jo.put("track",_track);
+                    int jo_length = jo.toString().getBytes().length;
+                    byte[] bytes_send = new byte[jo_length + 4];
+                    byte[] temp = __intToByteArrayLittle(jo_length,4);
+                    System.arraycopy(temp,0,bytes_send,0,4);
+                    System.arraycopy(jo.toString().getBytes(),0,bytes_send,4,jo_length);
+                    tcpUtil.send(bytes_send);
+                    bytes_send = null;
+                    temp = null;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            },0,2 * 1000, TimeUnit.MILLISECONDS);
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(R.color.mapViewBg);
