@@ -16,7 +16,7 @@ extern "C" {
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
-                                        jbyteArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in) {
+                                        jintArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in) {
 
     AndroidBitmapInfo bitmapInfo = {ANDROID_BITMAP_FORMAT_RGBA_8888};
     if (AndroidBitmap_getInfo(env, obj_bitmap, &bitmapInfo) != ANDROID_BITMAP_RESULT_SUCCESS) {
@@ -34,13 +34,14 @@ Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject o
     jint *ip_clean = env->GetIntArrayElements(color_cleaned,0);
     K *k = new K();
     k->multiple = bitmapInfo.width / 1000;
-    k->last_history_id = last_time_history_id_list;
-    k->analysisMap(env, in, (int32_t *) point_pixels,ip_block,ip_clean);
+    jint *point_history_id_list = env->GetIntArrayElements(last_time_history_id_list,0);
+    k->analysisMap(env, in,point_history_id_list ,(int32_t *) point_pixels,ip_block,ip_clean);
     AndroidBitmap_unlockPixels(env, obj_bitmap);
-    last_time_history_id_list = k->last_history_id;
     delete(k);
+    env->ReleaseIntArrayElements(last_time_history_id_list,point_history_id_list,0);
     env->ReleaseIntArrayElements(color_block,ip_block,0);
     env->ReleaseIntArrayElements(color_cleaned,ip_clean,0);
+
     return 0;
 }
 
@@ -196,9 +197,8 @@ int K::map_decompress(jbyte *compress, jbyte *uncompress, int len) {
 }
 
 
-void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned) {
+void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned) {
     jbyte *bp_in = env->GetByteArrayElements(in, 0);
-    jbyte *bp_last_histort_id = env->GetByteArrayElements(last_history_id,0);
     /*
      * 协议相关
      */
@@ -233,10 +233,11 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb
                  data_size);
              LOGI("history_id = %d, bp_last_histort_id = %d ,i = %d",history_id,bp_last_histort_id[i],i);
 #endif
-        if (data_size > 0 && bp_last_histort_id[i] < history_id) {
+        LOGI("point_history_id_list[i] = %d , i = %d ",point_history_id_list[i],i);
+        LOGI("history_id = %d ",history_id);
+        if (data_size > 0 && point_history_id_list[i] < history_id) {
             isException(env,ERROR_CODE_AnalysisMap);
-
-            bp_last_histort_id[i] = history_id;
+            point_history_id_list[i] = (unsigned int)history_id;
             x_begin = (block_id - 1) % 10 * 100;
             y_begin = (block_id - 1) / 10 * 100;
 #ifdef DEBUG
@@ -363,7 +364,6 @@ void K::analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb
         }
         interval = data_size + 6 + interval;
     }
-    env->ReleaseByteArrayElements(last_history_id,bp_last_histort_id,0);
     env->ReleaseByteArrayElements(in, bp_in, 0);
 }
 

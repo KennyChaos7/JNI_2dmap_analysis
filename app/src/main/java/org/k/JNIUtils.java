@@ -13,7 +13,7 @@ import android.graphics.Color;
 final class JNIUtils {
     private int[] color_block = {0,0,0,0};
     private int[] color_cleaned = {0,0,0,0};
-    private byte[] last_time_history_id_list = new byte[100];
+    public int[] last_time_history_id_list = new int[100];
 
     /**
      * 传入色值并在此类中保存
@@ -24,8 +24,8 @@ final class JNIUtils {
     {
         this.color_block = parseColor(str_color_block);
         this.color_cleaned = parseColor(str_color_cleaned);
-        for (byte b:last_time_history_id_list)
-            b = 1;
+        for (int history_id:last_time_history_id_list)
+            history_id = 1;
     }
 
     /**
@@ -101,7 +101,7 @@ final class JNIUtils {
      * -88 是指bitmap的文件头信息无法获取
      * -99 是指无法锁定bitmap的像素指针
      */
-    private native int ModifyBitmapMapData(Bitmap bitmap,byte[] last_time_history_id_list,
+    private native int ModifyBitmapMapData(Bitmap bitmap,int[] last_time_history_id_list,
                                            int[] color_block,int[] color_cleaned, byte[] in);
 
     /*

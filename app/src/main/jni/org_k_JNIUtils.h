@@ -27,7 +27,7 @@ void isException(JNIEnv* env,int errorCode);
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapMapData(JNIEnv *env, jobject instance, jobject obj_bitmap,
-                                     jbyteArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in);
+                                     jintArray last_time_history_id_list,jintArray color_block,jintArray color_cleaned,jbyteArray in);
 
 JNIEXPORT jint JNICALL
 Java_org_k_JNIUtils_ModifyBitmapTrackData(JNIEnv *env, jobject instance, jobject obj_bitmap,
@@ -57,7 +57,7 @@ public:
     int multiple = 1;
 
     void ToTYPE(jbyte bp_in, int *type);
-    void analysisMap(JNIEnv *env, jbyteArray in, int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);
+    void analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list,int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);
     void analysisTrack(JNIEnv* env, jbyteArray in, int32_t *point_pixels);
     uint16_t toUint16(uint8_t u1, uint8_t u2);
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);
