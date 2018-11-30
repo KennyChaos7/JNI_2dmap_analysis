@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     String test_file_name = "";
     ScheduledExecutorService scheduledThread = Executors.newScheduledThreadPool(1);
     int ssss = 13;
-    String __IP = "192.168.168.148";
+    String __IP = "192.168.233.168";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,12 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
 
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
+            tcpUtil.conn();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             String _ = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
             JSONObject jo = new JSONObject();
             try {
@@ -111,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             tcpUtil = new TCPUtil(8088, local_ip);
             tcpUtil.registerListener(this);
             tcpUtil.setRoombaIP(__IP);
-            tcpUtil.conn();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

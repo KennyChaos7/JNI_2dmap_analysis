@@ -221,23 +221,23 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
         /*
          * 先检测是否有错误
          */
-        isException(env,ERROR_CODE_AnalysisMap);
+//        isException(env, ERROR_CODE_AnalysisMap);
 
         block_id = toUint16(bp_in[4 + interval], bp_in[5 + interval]);
+        LOGI("i = %d , bp_1 = %d bp_2 = %d ",i,bp_in[4 + interval], bp_in[5 + interval]);
         history_id = toUint16(bp_in[6 + interval], bp_in[7 + interval]);
         data_size = toUint16(bp_in[8 + interval], bp_in[9 + interval]);
 
 
 #ifdef DEBUG
-            LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id,
-                 data_size);
-             LOGI("history_id = %d, bp_last_histort_id = %d ,i = %d",history_id,bp_last_histort_id[i],i);
+        LOGI("i = %d , block_id = %d , history_id = %d , data_size = %d", i, block_id, history_id,
+             data_size);
+         LOGI("history_id = %d, bp_last_history_id = %d ,i = %d",history_id,point_history_id_list[i],i);
 #endif
-//        LOGI("point_history_id_list[i] = %u , i = %d ",point_history_id_list[i],i);
-//        LOGI("history_id = %u ",history_id);
-        if (data_size > 0 && point_history_id_list[i] < history_id) {
-            isException(env,ERROR_CODE_AnalysisMap);
-            point_history_id_list[i] = (unsigned int)history_id;
+//        LOGI("point_history_id_list[i] = %d , i = %d history_id = %d ",point_history_id_list[i],i,history_id);
+        if (update_num > 0 && data_size > 0 && point_history_id_list[i] < history_id) {
+//            isException(env, ERROR_CODE_AnalysisMap);
+            point_history_id_list[i] = history_id;
             x_begin = (block_id - 1) % 10 * 100;
             y_begin = (block_id - 1) / 10 * 100;
 #ifdef DEBUG
@@ -247,20 +247,15 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
             jbyteArray compress_buf = env->NewByteArray(data_size);
             jbyte *p_compress = env->GetByteArrayElements(compress_buf, 0);
             env->GetByteArrayRegion(in, 10 + interval, data_size, p_compress); // 复制数据
-
             jbyteArray uncompress_buf = env->NewByteArray(2500);
             jbyte *p_uncompress = env->GetByteArrayElements(uncompress_buf, 0);
 
             map_decompress(p_compress, p_uncompress, data_size); // 解压数据
-            env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
-            env->DeleteLocalRef(compress_buf);
 
             int x = 0;
             int y = 0;
             for (int j = 0; j < 2500; ++j) {
-                isException(env,ERROR_CODE_AnalysisMap);
                 if (j > 0 && j % 25 == 0) {
-                    isException(env,ERROR_CODE_AnalysisMap);
                     y++;
                     x = 0;
                 }
@@ -268,7 +263,6 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
                 jint *point_type = env->GetIntArrayElements(pointTypes, 0);
                 this->ToTYPE(p_uncompress[j], point_type);
                 for (int q = 0; q < 4; ++q) {
-                    isException(env,ERROR_CODE_AnalysisMap);
 #ifdef DEBUG
                     LOGI("j = %d, point_type[q] = %d", j, point_type[q]);
 #endif
@@ -279,39 +273,40 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
                             LOGI("block -- alpha = %d , red = %d , green = %d , blue = %d",argb_block[0],argb_block[1],argb_block[2],argb_block[3]);
 #endif
                         alpha = argb_block[0];
-                        red =  argb_block[1];
-                        green =  argb_block[2];
-                        blue =  argb_block[3];
-                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000 * multiple, alpha, red,
+                        red = argb_block[1];
+                        green = argb_block[2];
+                        blue = argb_block[3];
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000 * multiple,
+                                  alpha, red,
                                   green, blue);
-                        if (multiple == 2)
-                        {
-                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                        } else if (multiple == 3)
-                        {
-                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                      green, blue);
-
-                        }
+//                        if (multiple == 2)
+//                        {
+//                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 1) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                        } else if (multiple == 3)
+//                        {
+//                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//
+//                        }
                     } else if (point_type[q] == TYPE_CLEANED) {
 #ifdef DEBUG
                         LOGI("cleaned -- block_id = %d , x = %d, y = %d", block_id, x + x_begin,
@@ -322,35 +317,50 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
                         red = argb_cleaned[1];
                         green = argb_cleaned[2];
                         blue = argb_cleaned[3];
-                            drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000 * multiple, alpha, red,
-                                      green, blue);
-                            if (multiple == 2)
-                            {
-                                drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                            } else if (multiple == 3)
-                            {
-                                drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 1) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 1 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + 2 + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                                drawPoint(point_pixels, x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
-                                          green, blue);
-                            }
+                        drawPoint(point_pixels, x + x_begin + (y + y_begin) * 1000 * multiple,
+                                  alpha, red,
+                                  green, blue);
+//                        if (multiple == 2) {
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + (y + y_begin + 1) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha,
+//                                      red,
+//                                      green, blue);
+//                        } else if (multiple == 3) {
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 1 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 2 + (y + y_begin) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 1 + (y + y_begin + 1) * 1000 * multiple, alpha,
+//                                      red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 2 + (y + y_begin + 1) * 1000 * multiple, alpha,
+//                                      red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 1 + (y + y_begin + 2) * 1000 * multiple, alpha,
+//                                      red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + 2 + (y + y_begin + 2) * 1000 * multiple, alpha,
+//                                      red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                            drawPoint(point_pixels,
+//                                      x + x_begin + (y + y_begin + 2) * 1000 * multiple, alpha, red,
+//                                      green, blue);
+//                        }
                     }
                     x++;
                 }
@@ -360,6 +370,8 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
 
             env->ReleaseByteArrayElements(uncompress_buf, p_uncompress, 0);
             env->DeleteLocalRef(uncompress_buf);
+            env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
+            env->DeleteLocalRef(compress_buf);
 
         }
         interval = data_size + 6 + interval;
@@ -387,7 +399,7 @@ void K::analysisTrack(JNIEnv *env, jbyteArray in, int32_t *point_pixels) {
     int blue = 255;
     int __before_x = -1;
     int __before_y = -1;
-    isException(env,ERROR_CODE_AnalysisTrack);
+//    isException(env,ERROR_CODE_AnalysisTrack);
     for (int i = 0; i + 3 < track_data_size; i += 4) {
         isException(env,ERROR_CODE_AnalysisTrack);
         x = toUint16(bp_in[8 + i], bp_in[8 + i + 1]);

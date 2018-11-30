@@ -16,6 +16,7 @@ extern "C" {
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN,TAG ,__VA_ARGS__) // 定义LOGW类型
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG ,__VA_ARGS__) // 定义LOGE类型
 #define LOGF(...) __android_log_print(ANDROID_LOG_FATAL,TAG ,__VA_ARGS__) // 定义LOGF类型
+#define BigtoLittle16(A) ((((uint16_t)(A) & 0xff00) >> 8) | (((uint16_t)(A) & 0x00ff) << 8))
 
 typedef struct {
     uint8_t alpha;
@@ -57,7 +58,7 @@ public:
     int multiple = 1;
 
     void ToTYPE(jbyte bp_in, int *type);
-    void analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list,int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);
+    void analysisMap(JNIEnv *env,  jbyteArray in,jint *point_history_id_list,int32_t *point_pixels,jint* argb_block,jint* argb_cleaned);
     void analysisTrack(JNIEnv* env, jbyteArray in, int32_t *point_pixels);
     uint16_t toUint16(uint8_t u1, uint8_t u2);
     int map_decompress(jbyte *compress,jbyte *uncompress, int len);
