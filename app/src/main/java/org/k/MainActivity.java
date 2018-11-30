@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     ScheduledExecutorService scheduledThread = Executors.newScheduledThreadPool(1);
     int ssss = 13;
     String __IP = "192.168.233.168";
+//    String __IP = "192.168.199.224";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,12 +211,13 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     public void onReceive(byte[] bytes, int length) {
         try {
             JSONObject data = new JSONObject(new String(bytes));
+            // map
             String str_map = data.getString("map");
             byte[] map_data_bytes = Base64.decode(str_map, Base64.NO_WRAP);
-            int result = mJNIUtils.getMapBitmap(mBitmap, map_data_bytes);
-            if (BuildConfig.DEBUG) {
-                Log.e("toBitmap", "" + result);
-            }
+            mJNIUtils.getMapBitmap(mBitmap, map_data_bytes);
+            String str_track = data.getString("track");
+            byte[] track_data_bytes = Base64.decode(str_track,Base64.NO_WRAP);
+            mJNIUtils.getTrackBitmap(mBitmap,track_data_bytes);
             mBitmapView.addBitmap(mBitmap);
             if (BuildConfig.DEBUG) {
                 Log.e("toBitmap", "finish");
