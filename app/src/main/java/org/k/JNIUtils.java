@@ -10,7 +10,7 @@ import android.graphics.Color;
  * 1,{@link #JNIUtils(String, String)}
  * 2,{@link #ModifyBitmapMapData(Bitmap, int[], int[], int[], byte[])}
  */
-final class JNIUtils {
+public final class JNIUtils {
     private int[] color_block = {0,0,0,0};
     private int[] color_cleaned = {0,0,0,0};
     /*
@@ -23,7 +23,7 @@ final class JNIUtils {
      * @param str_color_block 障碍色值的ARGB十六进制string
      * @param str_color_cleaned 已清扫色值的ARGB十六进制string
      */
-    JNIUtils(String str_color_block,String str_color_cleaned)
+    public JNIUtils(String str_color_block,String str_color_cleaned)
     {
         this.color_block = parseColor(str_color_block);
         this.color_cleaned = parseColor(str_color_cleaned);
