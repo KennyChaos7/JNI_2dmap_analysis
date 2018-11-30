@@ -16,7 +16,7 @@ final class JNIUtils {
     /*
         每次操作完地图数据后, 此处history_id会更新为刚刚解析完后正副地图的history_id列表
      */
-    public int[] last_time_history_id_list = new int[100];
+    public static int[] last_time_history_id_list = new int[100];
 
     /**
      * 传入色值并在此类中保存
@@ -27,8 +27,8 @@ final class JNIUtils {
     {
         this.color_block = parseColor(str_color_block);
         this.color_cleaned = parseColor(str_color_cleaned);
-        for (int history_id:last_time_history_id_list)
-            history_id = 1;
+        for (int i = 0; i < 100 ; i++ )
+            last_time_history_id_list[i] = 2;
     }
 
     /**
