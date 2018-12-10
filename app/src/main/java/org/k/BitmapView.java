@@ -65,7 +65,7 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
             postInvalidate();
         }
         if (BuildConfig.DEBUG) {
-            Log.e("addBitmap", "postInvalidate");
+            Log.e("addBitmap", "postInvalidate ---- " + System.currentTimeMillis());
         }
     }
 

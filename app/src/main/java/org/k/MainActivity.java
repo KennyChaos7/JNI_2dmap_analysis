@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     String test_file_name = "";
     ScheduledExecutorService scheduledThread = Executors.newScheduledThreadPool(1);
     int ssss = 13;
-    String __IP = "192.168.233.168";
+    String __IP = "";
+//    String __IP = "192.168.233.121";
 //    String __IP = "192.168.199.224";
 
     @Override
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        __IP = getIntent().getStringExtra("ip");
         mBtn_first = findViewById(R.id.btn_first);
         mBtn_first.setOnClickListener((v)->{
             tcpUtil.conn();
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            Log.e("toBitmap","start ---- " + System.currentTimeMillis());
             String _ = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
             JSONObject jo = new JSONObject();
             try {
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             },0,2 * 1000, TimeUnit.MILLISECONDS);
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
-        mBitmapView.setBackgroundColor(R.color.mapViewBg);
+        mBitmapView.setBackgroundColor(getResources().getColor(R.color.mapViewBg));
         mConfig = Bitmap.Config.ARGB_8888;
         mBitmap = Bitmap.createBitmap(size,size,mConfig);
         mJNIUtils = new JNIUtils(str_color_block,str_color_cleaned);
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             }
             mBitmapView.addBitmap(mBitmap);
             if (BuildConfig.DEBUG) {
-                Log.e("toBitmap", "finish");
+                Log.e("toBitmap", "finish ---- " + System.currentTimeMillis());
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -179,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             }
             mBitmapView.addBitmap(mBitmap);
             if (BuildConfig.DEBUG) {
-                Log.e("toBitmap", "finish");
+                Log.e("toBitmap", "finish ---- " + System.currentTimeMillis());
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             mJNIUtils.getTrackBitmap(mBitmap,track_data_bytes);
             mBitmapView.addBitmap(mBitmap);
             if (BuildConfig.DEBUG) {
-                Log.e("toBitmap", "finish");
+                Log.e("toBitmap", "finish ---- " + System.currentTimeMillis());
             }
         } catch (JSONException e) {
             e.printStackTrace();

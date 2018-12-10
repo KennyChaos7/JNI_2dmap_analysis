@@ -28,7 +28,7 @@ public final class JNIUtils {
         this.color_block = parseColor(str_color_block);
         this.color_cleaned = parseColor(str_color_cleaned);
         for (int i = 0; i < 100 ; i++ )
-            last_time_history_id_list[i] = 2;
+            last_time_history_id_list[i] = 0;
     }
 
     /**
