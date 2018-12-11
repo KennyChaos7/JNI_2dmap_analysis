@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.e("toBitmap","start ---- " + System.currentTimeMillis());
+            Log.e("addBitmap","start ---- " + System.currentTimeMillis());
             String _ = Base64.encodeToString(__intToByteArrayLittle(0,4),Base64.NO_WRAP);
             JSONObject jo = new JSONObject();
             try {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            test_file_name = "testdata8";
+//            test_file_name = "testdata";
 //            readAssetsFileToGetMap();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
@@ -213,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
     @Override
     public void onReceive(byte[] bytes, int length) {
         try {
+            Log.e("toBitmap",System.currentTimeMillis() + " - " + length);
             JSONObject data = new JSONObject(new String(bytes));
             // map
             String str_map = data.getString("map");
@@ -223,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             mJNIUtils.getTrackBitmap(mBitmap,track_data_bytes);
             mBitmapView.addBitmap(mBitmap);
             if (BuildConfig.DEBUG) {
-                Log.e("toBitmap", "finish ---- " + System.currentTimeMillis());
+                Log.e("addBitmap", "finish ---- " + System.currentTimeMillis());
             }
         } catch (JSONException e) {
             e.printStackTrace();

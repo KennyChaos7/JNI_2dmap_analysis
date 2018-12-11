@@ -233,12 +233,20 @@ void K::analysisMap(JNIEnv *env, jbyteArray in,jint *point_history_id_list, int3
             LOGI("x_begin = %d, y_begin = %d, index = %d", x_begin, y_begin,
                          x_begin + y_begin * 100);
 #endif
+            jsize size_in = env->GetArrayLength(in);
+            if (10 + interval + data_size > size_in)
+            {
+                LOGE("数据异常 = %d - %d , 10 + interval + data_size = %d , size_in = %d",history_id,block_id,10 + interval + data_size,size_in);
+                break;
+            }
             jbyteArray compress_buf = env->NewByteArray(data_size);
             jbyte *p_compress = env->GetByteArrayElements(compress_buf, 0);
             env->GetByteArrayRegion(in, 10 + interval, data_size, p_compress); // 复制数据
             jbyteArray uncompress_buf = env->NewByteArray(2500);
             jbyte *p_uncompress = env->GetByteArrayElements(uncompress_buf, 0);
-
+            for (int i = 0; i < 2500; ++i) {
+                p_uncompress[i] = 0;
+            }
             map_decompress(p_compress, p_uncompress, data_size); // 解压数据
             env->ReleaseByteArrayElements(compress_buf, p_compress, 0);
             env->DeleteLocalRef(compress_buf);
