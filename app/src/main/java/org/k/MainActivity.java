@@ -27,16 +27,16 @@ import java.util.concurrent.TimeUnit;
  * Created by Kenny on 18-11-12.
  */
 public class MainActivity extends AppCompatActivity implements TCPListener {
-    private Button mBtn_first,mBtn_secord;
+    private Button mBtn_first,mBtn_secord,mBtn_local;
     private BitmapView mBitmapView;
     private Bitmap mBitmap;
     private Bitmap.Config mConfig;
     private JNIUtils mJNIUtils = null;
     private TCPUtil tcpUtil = null;
     private int size = 1000;
-    private String str_color_block = "#FF000000";
-    private String str_color_cleaned = "#ff000066";
-    String test_file_name = "";
+    private String str_color_block = "#FFFFFFFF";
+    private String str_color_cleaned = "#FF9186EA";
+    String test_file_name = "testdata8";
     ScheduledExecutorService scheduledThread = Executors.newScheduledThreadPool(1);
     int ssss = 13;
     String __IP = "";
@@ -74,13 +74,9 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            test_file_name = "testdata";
-//            readAssetsFileToGetMap();
         });
         mBtn_secord = findViewById(R.id.btn_secord);
         mBtn_secord.setOnClickListener((v -> {
-//            test_file_name = "testdata";
-//            readAssetsFileToGetMap();
             scheduledThread.scheduleAtFixedRate(() -> {
                 byte[] historyIdsToBytes = new byte[100 * 2];
                 for (int index = 0; index < 100; index++)
@@ -107,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements TCPListener {
                     e.printStackTrace();
                 }
             },0,2 * 1000, TimeUnit.MILLISECONDS);
+        }));
+        mBtn_local = findViewById(R.id.btn_local);
+        mBtn_local.setOnClickListener((v->{
+            readAssetsFileToGetMap();
+            readAssetsFileToGetTrack();
         }));
         mBitmapView = findViewById(R.id.bitmap_view);
         mBitmapView.setBackgroundColor(getResources().getColor(R.color.mapViewBg));

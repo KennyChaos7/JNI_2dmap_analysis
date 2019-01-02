@@ -17,6 +17,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+
+    <Button
+        android:id="@+id/btn_secord"
+        android:layout_width="177dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_first"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <org.k.BitmapView
         android:id="@+id/bitmap_view"
         android:layout_width="0dp"
@@ -31,15 +44,14 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_first"/>
 
     <Button
-        android:id="@+id/btn_secord"
-        android:layout_width="177dp"
+        android:id="@+id/btn_local"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_first"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_marginBottom="8dp"
+        android:text="LOCAL"
+        app:layout_constraintBottom_toBottomOf="@+id/bitmap_view"
+        app:layout_constraintEnd_toEndOf="@+id/bitmap_view" />
+
 
 </android.support.constraint.ConstraintLayout>

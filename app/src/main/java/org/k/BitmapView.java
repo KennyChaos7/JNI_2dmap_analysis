@@ -34,6 +34,7 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
     public BitmapView(Context context) {
         super(context);
         setOnTouchListener(this);
+        mPaint.setAntiAlias(false);
         gestureDetector = new GestureDetector(context, this);
         scaleGestureDetector = new ScaleGestureDetector(context, this);
     }
@@ -41,6 +42,7 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
     public BitmapView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setOnTouchListener(this);
+        mPaint.setAntiAlias(false);
         gestureDetector = new GestureDetector(context, this);
         scaleGestureDetector = new ScaleGestureDetector(context, this);
     }
@@ -48,6 +50,7 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
     public BitmapView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOnTouchListener(this);
+        mPaint.setAntiAlias(false);
         gestureDetector = new GestureDetector(context, this);
         scaleGestureDetector = new ScaleGestureDetector(context, this);
     }
@@ -55,6 +58,7 @@ public class BitmapView extends View implements View.OnTouchListener, GestureDet
     public BitmapView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setOnTouchListener(this);
+        mPaint.setAntiAlias(false);
         gestureDetector = new GestureDetector(context, this);
         scaleGestureDetector = new ScaleGestureDetector(context, this);
     }
