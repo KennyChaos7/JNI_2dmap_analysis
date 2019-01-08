@@ -17,7 +17,8 @@
             <!--</intent-filter>-->
         <!--</activity>-->
         <!--<activity android:name="org.k.MainActivity"  android:screenOrientation="portrait"/>-->
-        <activity android:name="org.k.MainActivity" android:screenOrientation="portrait">
+        <!--<activity android:name="org.k.MainSurfaceActivity"  android:screenOrientation="portrait"/>-->
+        <activity android:name="org.k.MainSurfaceActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
