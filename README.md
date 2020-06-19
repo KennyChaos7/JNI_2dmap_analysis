@@ -1,4 +1,4 @@
 # JNI_2dmap_analysis
-
-STILL WRITING .md
-编写文档中...
+@Deprecated
+学习了b站的弹幕源码后发现有巨大问题
+不应该由有限的java heap来创建bitmap,而应该用底层的skiaBitmap来创建
